@@ -17,7 +17,8 @@ define(['jquery',
             prefix: 'faostat_ui_welcome_page_',
             placeholder_id: 'faostat_ui_welcome_page',
             url_wds_crud: 'http://fenixapps2.fao.org/wds_5.1/rest/crud',
-            isRendered: false
+            isRendered: false,
+            domain_name: undefined
 
         };
 
@@ -58,7 +59,8 @@ define(['jquery',
             bulk_downloads_text: translate.bulk_downloads_text,
             metadata_title: translate.metadata_title,
             metadata_text: translate.metadata_text,
-            related_documents: translate.related_documents
+            related_documents: translate.related_documents,
+            domain_name: this.CONFIG.domain_name
         };
         html = template(dynamic_data);
         $('#' + this.CONFIG.placeholder_id).html(html);
