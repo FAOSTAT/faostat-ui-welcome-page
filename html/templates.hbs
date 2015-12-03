@@ -25,9 +25,21 @@
             <p>
                 {{metadata_text}}
             </p>
-            <h1>
-                {{related_documents}}
-            </h1>
+            {{#if hasDocuments}}
+                <h1>
+                    {{related_documents}}
+                </h1>
+                {{#each documents}}
+                    <div class='row'>
+                        <div class='col-lg-12'>
+                            <i class='fa fa-archive'></i>
+                            <a target='_blank' href='{{base_url}}{{FileName}}'>
+                                &nbsp;{{FileTitle}}
+                            </a>
+                        </div>
+                    </div>
+                {{/each}}
+            {{/if}}
         </div>
     </div>
 </script>
