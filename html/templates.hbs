@@ -1,3 +1,33 @@
 <script type='text/x-handlebars-template' id='faostat_ui_welcome_page_structure'>
-
+    <div class='row'>
+        <div class='col-lg-12'>
+            <h1>
+                {{title}} {{domain_name}}
+            </h1>
+            <p>
+                {{text}}
+            </p>
+            <h2>
+                <i class='fa fa-download'></i> {{interactive_download_title}}
+            </h2>
+            <p>
+                {{interactive_download_text}}
+            </p>
+            <h2>
+                <i class='fa fa-archive'></i> {{bulk_downloads_title}}
+            </h2>
+            <p>
+                {{bulk_downloads_text}}
+            </p>
+            <h2>
+                <i class='fa fa-info'></i> {{metadata_title}}
+            </h2>
+            <p>
+                {{metadata_text}}
+            </p>
+            <h1>
+                {{related_documents}}
+            </h1>
+        </div>
+    </div>
 </script>
