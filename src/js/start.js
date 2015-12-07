@@ -22,7 +22,7 @@ define(['jquery',
             isRendered: false,
             domain_name: undefined,
             domain_code: undefined,
-            base_url: 'http://faostat.fao.org/Portals/_Faostat/Downloads/FAOSTATFiles/'
+            base_url: 'http://faostat3.fao.org/faostat-documents/'
 
         };
 
