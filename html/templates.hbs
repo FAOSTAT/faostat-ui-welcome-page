@@ -5,12 +5,10 @@
             <p>
                 {{text}}
             </p>
-
+            <h3>
+                {{related_documents}}
+            </h3>
             {{#if hasDocuments}}
-                <h3>
-                    {{related_documents}}
-                </h3>
-
                 {{#each documents}}
                     <div class='row'>
                         <div class='col-lg-12'>
@@ -22,32 +20,29 @@
                     </div>
                 {{/each}}
             {{else}}
-                <!--<p>
+                <p>
                     No documents available for {{domain_name}}.
-                </p>-->
+                </p>
             {{/if}}
 
-
-            <h3>
-                {{interactive_download_title}}
-            </h3>
-            <p>
-                {{interactive_download_text}}
-            </p>
-            <h3>
-                {{bulk_downloads_title}}
-            </h3>
-            <p>
-                {{bulk_downloads_text}}
-            </p>
-            <h3>
-                {{metadata_title}}
-            </h3>
-            <p>
-                {{metadata_text}}
-            </p>
-
-
+            <!--<h3>-->
+                <!--{{interactive_download_title}}-->
+            <!--</h3>-->
+            <!--<p>-->
+                <!--{{interactive_download_text}}-->
+            <!--</p>-->
+            <!--<h3>-->
+                <!--{{bulk_downloads_title}}-->
+            <!--</h3>-->
+            <!--<p>-->
+                <!--{{bulk_downloads_text}}-->
+            <!--</p>-->
+            <!--<h3>-->
+                <!--{{metadata_title}}-->
+            <!--</h3>-->
+            <!--<p>-->
+                <!--{{metadata_text}}-->
+            <!--</p>-->
 
         </div>
     </div>
