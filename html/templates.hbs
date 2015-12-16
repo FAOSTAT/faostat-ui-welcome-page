@@ -1,9 +1,8 @@
 <script type='text/x-handlebars-template' id='faostat_ui_welcome_page_structure'>
     <div class='row'>
         <div class='col-xs-12'>
-
             <p>
-                {{text}}
+                <div id='welcome_text'></div>
             </p>
             <h3>
                 {{related_documents}}
@@ -21,29 +20,9 @@
                 {{/each}}
             {{else}}
                 <p>
-                    No documents available for {{domain_name}}.
+                    {{no_docs_available}}{{domain_name}}.
                 </p>
             {{/if}}
-
-            <!--<h3>-->
-                <!--{{interactive_download_title}}-->
-            <!--</h3>-->
-            <!--<p>-->
-                <!--{{interactive_download_text}}-->
-            <!--</p>-->
-            <!--<h3>-->
-                <!--{{bulk_downloads_title}}-->
-            <!--</h3>-->
-            <!--<p>-->
-                <!--{{bulk_downloads_text}}-->
-            <!--</p>-->
-            <!--<h3>-->
-                <!--{{metadata_title}}-->
-            <!--</h3>-->
-            <!--<p>-->
-                <!--{{metadata_text}}-->
-            <!--</p>-->
-
         </div>
     </div>
 </script>

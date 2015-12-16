@@ -10,7 +10,8 @@ define({
         bulk_downloads_text: 'Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, ché la diritta via era smarrita. Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte che nel pensier rinova la paura!',
         metadata_title: 'Metadata',
         metadata_text: 'Nel mezzo del cammin di nostra vita mi ritrovai per una selva oscura, ché la diritta via era smarrita. Ahi quanto a dir qual era è cosa dura esta selva selvaggia e aspra e forte che nel pensier rinova la paura!',
-        related_documents: 'Related Documents'
+        related_documents: 'Related Documents',
+        no_docs_available: 'No documents avaiable for'
     },
     fr : true,
     es : true

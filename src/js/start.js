@@ -59,12 +59,24 @@ define(['jquery',
             domain_code: this.CONFIG.domain_code
         }).then(function (data) {
             for (i = 0; i < data.data.length; i += 1) {
-                documents.push({
-                    FileName: data.data[i].FileName,
-                    FileTitle: data.data[i].FileTitle,
-                    FileContent: data.data[i].FileContent,
-                    base_url: that.CONFIG.base_url
-                });
+                if (data.data[i].FileTitle !== 'About') {
+                    documents.push({
+                        FileName: data.data[i].FileName,
+                        FileTitle: data.data[i].FileTitle,
+                        FileContent: data.data[i].FileContent,
+                        base_url: that.CONFIG.base_url
+                    });
+                } else {
+                    $.ajaxPrefilter(function (options) {
+                        if (options.crossDomain && jQuery.support.cors) {
+                            var http = (window.location.protocol === 'http:' ? 'http:' : 'https:');
+                            options.url = http + '//cors-anywhere.herokuapp.com/' + options.url;
+                        }
+                    });
+                    $.get(that.CONFIG.base_url + data.data[i].FileName, function (response) {
+                        $('#welcome_text').html(response);
+                    });
+                }
             }
             that.load_template(documents);
         });
@@ -95,7 +107,8 @@ define(['jquery',
             related_documents: translate.related_documents,
             domain_name: this.CONFIG.domain_name,
             hasDocuments: hasDocuments,
-            documents: documents
+            documents: documents,
+            no_docs_available: translate.no_docs_available
         };
         html = template(dynamic_data);
         $('#' + this.CONFIG.placeholder_id).html(html);
