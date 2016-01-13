@@ -1,28 +1,60 @@
 /*global define*/
 define(['jquery',
-        'config/Config',
-        'handlebars',
-        'text!faostat_ui_welcome_page/html/templates.hbs',
-        'i18n!faostat_ui_welcome_page/nls/translate',
-        'faostatapiclient',
-        'bootstrap',
-        'sweetAlert',
-        'amplify'], function ($, C, Handlebars, templates, translate, FAOSTATAPIClient) {
+    'loglevel',
+    'config/Config',
+    'config/Routes',
+    'config/Events',
+    'globals/Common',
+    'handlebars',
+    'text!faostat_ui_welcome_page/html/templates.hbs',
+    //'i18n!faostat_ui_welcome_page/nls/translate',
+    'i18n!nls/download',
+    'faostatapiclient',
+    'amplify'
+], function ($, log, C, ROUTE, E, Common, Handlebars, templates, translate, FAOSTATAPIClient) {
 
     'use strict';
 
     function WELCOME_PAGE() {
 
+        this.s = {
+
+            WELCOME_TEXT: '#welcome_text',
+            WELCOME_SECTION: '#welcome_section a'
+
+        };
+
         this.CONFIG = {
 
-            lang: 'en',
+            // TODO: CONFIG is not passed!
+
+            //lang: 'en',
             prefix: 'faostat_ui_welcome_page_',
             placeholder_id: 'faostat_ui_welcome_page',
-            url_wds_crud: 'http://fenixapps2.fao.org/wds_5.1/rest/crud',
             isRendered: false,
             domain_name: undefined,
             domain_code: undefined,
-            base_url: 'http://faostat3.fao.org/faostat-documents/'
+            base_url: 'http://faostat3.fao.org/faostat-documents/',
+
+            // TODO: move to a common download section
+            sections: [
+                {
+                    id: ROUTE.DOWNLOAD_WELCOME,
+                    name: translate.about
+                },
+                {
+                    id: ROUTE.DOWNLOAD_INTERACTIVE,
+                    name: translate.interactive_download_title
+                },
+                {
+                    id: ROUTE.DOWNLOAD_BULK,
+                    name: translate.bulk_downloads_title
+                },
+                {
+                    id: ROUTE.DOWNLOAD_METADATA,
+                    name: translate.metadata_title
+                }
+            ]
 
         };
 
@@ -34,7 +66,7 @@ define(['jquery',
         this.CONFIG = $.extend(true, {}, this.CONFIG, config);
 
         /* Fix the language, if needed. */
-        this.CONFIG.lang = this.CONFIG.lang !== null ? this.CONFIG.lang : 'en';
+        //this.CONFIG.lang = this.CONFIG.lang !== null ? this.CONFIG.lang : 'en';
 
         /* Initiate FAOSTAT API's client. */
         this.CONFIG.api = new FAOSTATAPIClient();
@@ -49,14 +81,15 @@ define(['jquery',
     WELCOME_PAGE.prototype.render = function () {
 
         /* Variables. */
-        var that = this,
+        var self = this,
             documents = [],
             i;
 
         /* Query DB for available files. */
         this.CONFIG.api.documents({
             datasource: C.DATASOURCE,
-            domain_code: this.CONFIG.domain_code
+            domain_code: this.CONFIG.domain_code,
+            lang: Common.getLocale()
         }).then(function (data) {
             for (i = 0; i < data.data.length; i += 1) {
                 if (data.data[i].FileTitle !== 'About') {
@@ -64,7 +97,7 @@ define(['jquery',
                         FileName: data.data[i].FileName,
                         FileTitle: data.data[i].FileTitle,
                         FileContent: data.data[i].FileContent,
-                        base_url: that.CONFIG.base_url
+                        base_url: self.CONFIG.base_url
                     });
                 } else {
                     $.ajaxPrefilter(function (options) {
@@ -73,49 +106,55 @@ define(['jquery',
                             options.url = http + '//cors-anywhere.herokuapp.com/' + options.url;
                         }
                     });
-                    $.get(that.CONFIG.base_url + data.data[i].FileName, function (response) {
-                        $('#welcome_text').html(response);
+                    $.get(self.CONFIG.base_url + data.data[i].FileName, function(response) {
+                        amplify.publish(E.LOADING_HIDE, {container: self.s.WELCOME_TEXT});
+                        $(self.s.WELCOME_TEXT).html(response);
                     });
                 }
             }
-            that.load_template(documents);
+
+            self.load_template(documents);
+
         });
 
     };
 
     WELCOME_PAGE.prototype.load_template = function (documents) {
 
+        amplify.publish(E.LOADING_SHOW, {container: this.s.WELCOME_TEXT});
+
         /* Variables. */
-        var source,
-            template,
-            dynamic_data,
-            html,
-            hasDocuments = documents.length > 0;
+        var source = $(templates).filter('#faostat_ui_welcome_page_structure').html(),
+            template = Handlebars.compile(source),
+            hasDocuments = documents.length > 0,
+            data = {
+                domain_name: this.CONFIG.domain_name,
+                hasDocuments: hasDocuments,
+                documents: documents,
+                sections: this.CONFIG.sections
+            },
+            html = template($.extend(true, {}, data, translate)),
+            self = this;
 
         /* Load main structure. */
-        source = $(templates).filter('#faostat_ui_welcome_page_structure').html();
-        template = Handlebars.compile(source);
-        dynamic_data = {
-            title: translate.title,
-            text: translate.text,
-            interactive_download_title: translate.interactive_download_title,
-            interactive_download_text: translate.interactive_download_text,
-            bulk_downloads_title: translate.bulk_downloads_title,
-            bulk_downloads_text: translate.bulk_downloads_text,
-            metadata_title: translate.metadata_title,
-            metadata_text: translate.metadata_text,
-            related_documents: translate.related_documents,
-            domain_name: this.CONFIG.domain_name,
-            hasDocuments: hasDocuments,
-            documents: documents,
-            no_docs_available: translate.no_docs_available
-        };
-        html = template(dynamic_data);
         $('#' + this.CONFIG.placeholder_id).html(html);
 
         /* Set rendered flag. */
         this.CONFIG.isRendered = true;
 
+        $(this.s.WELCOME_SECTION).on('click', function(e) {
+
+            e.preventDefault();
+
+            // routing
+            self.changeState(this.getAttribute('data-section'), self.CONFIG.domain_code);
+
+        });
+
+    };
+
+    WELCOME_PAGE.prototype.changeState = function (section, code) {
+        Common.changeURL(section, [code], true);
     };
 
     WELCOME_PAGE.prototype.isNotRendered = function () {
