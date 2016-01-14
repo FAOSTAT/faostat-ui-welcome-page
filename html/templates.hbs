@@ -21,24 +21,9 @@
                     {{/each}}
                 </ul>
             {{else}}
-                <p>{{no_docs_available}}{{domain_name}}.</p>
+                <p>{{no_docs_available}} {{domain_name}}.</p>
             {{/if}}
         </div>
     </div>
-    <div class='row'>
-        <div class='col-xs-12'>
-            <h3>
-                {{go_to_section}}
-            </h3>
-            {{#if sections}}
-                <ul id="welcome_section" style="list-style-type: none; padding: 0; margin: 0;">
-                    {{#each sections}}
-                        <li>
-                            <a target='_blank' data-section="{{id}}" href='#'>{{name}}</a>
-                        </li>
-                    {{/each}}
-                </ul>
-            {{/if}}
-        </div>
-    </div>
+    <div id="welcome_section"></div>
 </script>

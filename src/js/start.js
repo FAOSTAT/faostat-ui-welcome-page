@@ -1,17 +1,19 @@
 /*global define*/
-define(['jquery',
+define([
+    'jquery',
     'loglevel',
-    'config/Config',
-    'config/Routes',
-    'config/Events',
-    'globals/Common',
+    'faostat-ui/config/Config',
+    'faostat-ui/config/Routes',
+    'faostat-ui/config/Events',
+    'faostat-ui/globals/Common',
     'handlebars',
     'text!faostat_ui_welcome_page/html/templates.hbs',
     //'i18n!faostat_ui_welcome_page/nls/translate',
     'i18n!nls/download',
     'faostatapiclient',
+    'faostat-ui/lib/download/go_to_section/go-to-section',
     'amplify'
-], function ($, log, C, ROUTE, E, Common, Handlebars, templates, translate, FAOSTATAPIClient) {
+], function ($, log, C, ROUTE, E, Common, Handlebars, templates, translate, FAOSTATAPIClient, GoToSection) {
 
     'use strict';
 
@@ -20,7 +22,7 @@ define(['jquery',
         this.s = {
 
             WELCOME_TEXT: '#welcome_text',
-            WELCOME_SECTION: '#welcome_section a'
+            WELCOME_SECTION: '#welcome_section'
 
         };
 
@@ -100,12 +102,12 @@ define(['jquery',
                         base_url: self.CONFIG.base_url
                     });
                 } else {
-                    $.ajaxPrefilter(function (options) {
+/*                    $.ajaxPrefilter(function (options) {
                         if (options.crossDomain && jQuery.support.cors) {
                             var http = (window.location.protocol === 'http:' ? 'http:' : 'https:');
                             options.url = http + '//cors-anywhere.herokuapp.com/' + options.url;
                         }
-                    });
+                    });*/
                     $.get(self.CONFIG.base_url + data.data[i].FileName, function(response) {
                         amplify.publish(E.LOADING_HIDE, {container: self.s.WELCOME_TEXT});
                         $(self.s.WELCOME_TEXT).html(response);
@@ -131,7 +133,7 @@ define(['jquery',
                 domain_name: this.CONFIG.domain_name,
                 hasDocuments: hasDocuments,
                 documents: documents,
-                sections: this.CONFIG.sections
+                //sections: this.CONFIG.sections
             },
             html = template($.extend(true, {}, data, translate)),
             self = this;
@@ -142,19 +144,13 @@ define(['jquery',
         /* Set rendered flag. */
         this.CONFIG.isRendered = true;
 
-        $(this.s.WELCOME_SECTION).on('click', function(e) {
 
-            e.preventDefault();
+        // add go to section
+       new GoToSection().init({
+           container: $('#' + this.CONFIG.placeholder_id).find(this.s.WELCOME_SECTION),
+           domain_code: this.CONFIG.domain_code
+       });
 
-            // routing
-            self.changeState(this.getAttribute('data-section'), self.CONFIG.domain_code);
-
-        });
-
-    };
-
-    WELCOME_PAGE.prototype.changeState = function (section, code) {
-        Common.changeURL(section, [code], true);
     };
 
     WELCOME_PAGE.prototype.isNotRendered = function () {
