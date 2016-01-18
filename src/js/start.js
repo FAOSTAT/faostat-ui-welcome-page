@@ -93,7 +93,9 @@ define([
             domain_code: this.CONFIG.domain_code,
             lang: Common.getLocale()
         }).then(function (data) {
+
             for (i = 0; i < data.data.length; i += 1) {
+
                 if (data.data[i].FileTitle !== 'About') {
                     documents.push({
                         FileName: data.data[i].FileName,
@@ -102,17 +104,12 @@ define([
                         base_url: self.CONFIG.base_url
                     });
                 } else {
-/*                    $.ajaxPrefilter(function (options) {
-                        if (options.crossDomain && jQuery.support.cors) {
-                            var http = (window.location.protocol === 'http:' ? 'http:' : 'https:');
-                            options.url = http + '//cors-anywhere.herokuapp.com/' + options.url;
-                        }
-                    });*/
                     $.get(self.CONFIG.base_url + data.data[i].FileName, function(response) {
                         amplify.publish(E.LOADING_HIDE, {container: self.s.WELCOME_TEXT});
                         $(self.s.WELCOME_TEXT).html(response);
                     });
                 }
+
             }
 
             self.load_template(documents);
