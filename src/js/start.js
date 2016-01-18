@@ -104,6 +104,7 @@ define([
                         base_url: self.CONFIG.base_url
                     });
                 } else {
+                    amplify.publish(E.LOADING_SHOW, {container: self.s.WELCOME_TEXT});
                     $.get(self.CONFIG.base_url + data.data[i].FileName, function(response) {
                         amplify.publish(E.LOADING_HIDE, {container: self.s.WELCOME_TEXT});
                         $(self.s.WELCOME_TEXT).html(response);
