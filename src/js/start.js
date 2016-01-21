@@ -2,16 +2,16 @@
 define([
     'jquery',
     'loglevel',
-    'faostat-ui/config/Config',
-    'faostat-ui/config/Routes',
-    'faostat-ui/config/Events',
-    'faostat-ui/globals/Common',
+    'config/Config',
+    'config/Routes',
+    'config/Events',
+    'globals/Common',
     'handlebars',
     'text!faostat_ui_welcome_page/html/templates.hbs',
     //'i18n!faostat_ui_welcome_page/nls/translate',
     'i18n!nls/download',
     'faostatapiclient',
-    'faostat-ui/lib/download/go_to_section/go-to-section',
+    'lib/download/go_to_section/go-to-section',
     'amplify'
 ], function ($, log, C, ROUTE, E, Common, Handlebars, templates, translate, FAOSTATAPIClient, GoToSection) {
 
