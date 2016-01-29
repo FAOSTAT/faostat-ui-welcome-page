@@ -1,4 +1,4 @@
-/*global define*/
+/*global define, amplify */
 define([
     'jquery',
     'loglevel',
@@ -28,12 +28,7 @@ define([
 
         this.CONFIG = {
 
-            // TODO: CONFIG is not passed!
-
-            //lang: 'en',
-            prefix: 'faostat_ui_welcome_page_',
-            placeholder_id: 'faostat_ui_welcome_page',
-            isRendered: false,
+            container: 'faostat_ui_welcome_page',
             domain_name: undefined,
             domain_code: undefined,
             base_url: 'http://faostat3.fao.org/faostat-documents/',
@@ -67,17 +62,12 @@ define([
         /* Extend default configuration. */
         this.CONFIG = $.extend(true, {}, this.CONFIG, config);
 
-        /* Fix the language, if needed. */
-        //this.CONFIG.lang = this.CONFIG.lang !== null ? this.CONFIG.lang : 'en';
+        this.$CONTAINER = ($(this.CONFIG.container).length > 0)? $(this.CONFIG.container) : $('#' + this.CONFIG.container);
 
         /* Initiate FAOSTAT API's client. */
         this.CONFIG.api = new FAOSTATAPIClient();
 
-        /* Render, if needed. */
-        if (this.CONFIG.isRendered === false) {
-            this.render();
-        }
-
+        this.render();
     };
 
     WELCOME_PAGE.prototype.render = function () {
@@ -130,22 +120,17 @@ define([
             data = {
                 domain_name: this.CONFIG.domain_name,
                 hasDocuments: hasDocuments,
-                documents: documents,
+                documents: documents
                 //sections: this.CONFIG.sections
             },
-            html = template($.extend(true, {}, data, translate)),
-            self = this;
+            html = template($.extend(true, {}, data, translate));
 
         /* Load main structure. */
-        $('#' + this.CONFIG.placeholder_id).html(html);
-
-        /* Set rendered flag. */
-        this.CONFIG.isRendered = true;
-
+        this.$CONTAINER.html(html);
 
         // add go to section
        new GoToSection().init({
-           container: $('#' + this.CONFIG.placeholder_id).find(this.s.WELCOME_SECTION),
+           container: this.$CONTAINER.find(this.s.WELCOME_SECTION),
            domain_code: this.CONFIG.domain_code
        });
 
@@ -156,7 +141,7 @@ define([
     };
 
     WELCOME_PAGE.prototype.dispose = function () {
-        $('#' + this.CONFIG.placeholder_id).empty();
+        this.$CONTAINER.empty();
     };
 
     return WELCOME_PAGE;
