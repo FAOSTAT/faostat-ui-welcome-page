@@ -1,11 +1,11 @@
 <script type='text/x-handlebars-template' id='faostat_ui_welcome_page_structure'>
+    <br>
     <div class='row'>
         <div class='col-xs-12'>
-            <p>
-            <div id='welcome_text'></div>
-            </p>
+            <p id='welcome_text'></p>
         </div>
     </div>
+    <br>
     <div class='row'>
         <div class='col-xs-12'>
             <h3>
@@ -14,9 +14,8 @@
             {{#if hasDocuments}}
                 <ul style="list-style-type: none; padding: 0; margin: 0;">
                     {{#each documents}}
-                        <li>
-                            <i class="fa fa-archive"></i>
-                            <a target='_blank' href='{{base_url}}{{FileName}}'>{{FileTitle}}</a>
+                        <li style="margin-top:15px;">
+                            <a target='_blank' href='{{base_url}}{{FileName}}'><i class="fa fa-file-pdf-o"></i> {{FileTitle}}</a>
                         </li>
                     {{/each}}
                 </ul>
@@ -25,5 +24,6 @@
             {{/if}}
         </div>
     </div>
+    <br>
     <div id="welcome_section"></div>
 </script>
