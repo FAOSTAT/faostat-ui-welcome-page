@@ -64,6 +64,10 @@ define([
 
         this.$CONTAINER = ($(this.CONFIG.container).length > 0)? $(this.CONFIG.container) : $('#' + this.CONFIG.container);
 
+        this.$CONTAINER.empty();
+
+        amplify.publish(E.LOADING_SHOW, { container: this.$CONTAINER });
+
         /* Initiate FAOSTAT API's client. */
         this.CONFIG.api = new FAOSTATAPIClient();
 
@@ -82,23 +86,34 @@ define([
             datasource: C.DATASOURCE,
             domain_code: this.CONFIG.domain_code,
             lang: Common.getLocale()
-        }).then(function (data) {
+        }).then(function (d) {
 
-            for (i = 0; i < data.data.length; i += 1) {
+            for (i = 0; i < d.data.length; i += 1) {
 
-                if (data.data[i].FileTitle !== 'About') {
+                log.info(d.data[i]);
+
+                // TODO: this should be a "fileType" or anyway should come from a differenct place instead of an hardcoded "title" "About"
+                if (d.data[i].FileTitle !== 'About') {
+
+                    // List of documents related to the Domain
                     documents.push({
-                        FileName: data.data[i].FileName,
-                        FileTitle: data.data[i].FileTitle,
-                        FileContent: data.data[i].FileContent,
+                        FileName: d.data[i].FileName,
+                        FileTitle: d.data[i].FileTitle,
+                        FileContent: d.data[i].FileContent,
                         base_url: self.CONFIG.base_url
                     });
+                    
                 } else {
+
+                    // About section of the domain
+
                     amplify.publish(E.LOADING_SHOW, {container: self.s.WELCOME_TEXT});
-                    $.get(self.CONFIG.base_url + data.data[i].FileName, function(response) {
+                    $.get(self.CONFIG.base_url + d.data[i].FileName, function(response) {
+                        log.info(response);
                         amplify.publish(E.LOADING_HIDE, {container: self.s.WELCOME_TEXT});
                         $(self.s.WELCOME_TEXT).html(response);
                     });
+
                 }
 
             }
@@ -134,10 +149,6 @@ define([
            domain_code: this.CONFIG.domain_code
        });
 
-    };
-
-    WELCOME_PAGE.prototype.isNotRendered = function () {
-        return !this.CONFIG.isRendered;
     };
 
     WELCOME_PAGE.prototype.dispose = function () {
