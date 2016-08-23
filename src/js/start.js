@@ -2,10 +2,8 @@
 define([
     'jquery',
     'loglevel',
-    'config/Config',
     'config/Routes',
     'config/Events',
-    'globals/Common',
     'handlebars',
     'text!faostat_ui_welcome_page/html/templates.hbs',
     //'i18n!faostat_ui_welcome_page/nls/translate',
@@ -13,7 +11,7 @@ define([
     'faostatapiclient',
     'lib/download/go_to_section/go-to-section',
     'amplify'
-], function ($, log, C, ROUTE, E, Common, Handlebars, templates, translate, FAOSTATAPIClient, GoToSection) {
+], function ($, log, ROUTE, E, Handlebars, templates, translate, API, GoToSection) {
 
     'use strict';
 
@@ -68,9 +66,6 @@ define([
 
         amplify.publish(E.LOADING_SHOW, { container: this.$CONTAINER });
 
-        /* Initiate FAOSTAT API's client. */
-        this.CONFIG.api = new FAOSTATAPIClient();
-
         this.render();
     };
 
@@ -82,10 +77,8 @@ define([
             i;
 
         /* Query DB for available files. */
-        this.CONFIG.api.documents({
-            datasource: C.DATASOURCE,
+        API.documents({
             domain_code: this.CONFIG.domain_code,
-            lang: Common.getLocale()
         }).then(function (d) {
 
             for (i = 0; i < d.data.length; i += 1) {
